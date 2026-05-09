@@ -3,6 +3,7 @@ package com.greenherb.greenherb_api.controller;
 import com.greenherb.greenherb_api.model.Measurement;
 import com.greenherb.greenherb_api.service.MeasurementService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +14,10 @@ public class MeasurementController {
     private final MeasurementService measurementService;
 
     @PostMapping
-    public Measurement createMeasurement(@RequestBody Measurement measurement) {
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'ADMIN')")
+    public Measurement createMeasurement(
+            @RequestBody Measurement measurement
+    ) {
 
         return measurementService.saveMeasurement(measurement);
     }
