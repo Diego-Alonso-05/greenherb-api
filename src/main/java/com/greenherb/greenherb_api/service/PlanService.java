@@ -1,5 +1,6 @@
 package com.greenherb.greenherb_api.service;
 
+import com.greenherb.greenherb_api.exception.NotFoundException;
 import com.greenherb.greenherb_api.model.Plan;
 import com.greenherb.greenherb_api.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,9 @@ public class PlanService {
     public Plan getPlanById(Long id) {
 
         return planRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Plan not found"));
+                .orElseThrow(() ->
+                        new NotFoundException("Plan not found")
+                );
     }
 
     public Plan updatePlan(Long id, Plan updatedPlan) {
