@@ -46,26 +46,48 @@ public class MeasurementService {
 
         if (highTemperature && lowHumidity) {
 
-            Alert alert = Alert.builder()
-                    .message("Critical environment conditions detected")
-                    .level("CRITICAL")
-                    .status(AlertStatus.ACTIVE)
-                    .createdAt(LocalDateTime.now())
-                    .build();
+            boolean alertExists = alertRepository
+                    .findByMessageAndLevelAndStatus(
+                            "Critical environment conditions detected",
+                            "CRITICAL",
+                            AlertStatus.ACTIVE
+                    )
+                    .isPresent();
 
-            alertRepository.save(alert);
+            if (!alertExists) {
+
+                Alert alert = Alert.builder()
+                        .message("Critical environment conditions detected")
+                        .level("CRITICAL")
+                        .status(AlertStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .build();
+
+                alertRepository.save(alert);
+            }
         }
 
         if (highHumidity || lowTemperature) {
 
-            Alert alert = Alert.builder()
-                    .message("Warning conditions detected")
-                    .level("WARNING")
-                    .status(AlertStatus.ACTIVE)
-                    .createdAt(LocalDateTime.now())
-                    .build();
+            boolean alertExists = alertRepository
+                    .findByMessageAndLevelAndStatus(
+                            "Warning conditions detected",
+                            "WARNING",
+                            AlertStatus.ACTIVE
+                    )
+                    .isPresent();
 
-            alertRepository.save(alert);
+            if (!alertExists) {
+
+                Alert alert = Alert.builder()
+                        .message("Warning conditions detected")
+                        .level("WARNING")
+                        .status(AlertStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .build();
+
+                alertRepository.save(alert);
+            }
         }
 
         return savedMeasurement;
