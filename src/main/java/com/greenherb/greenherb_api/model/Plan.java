@@ -18,21 +18,23 @@ public class Plan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Type cannot be empty")
     private String type;
 
-    @Min(10)
+    @Min(value = 10, message = "Minimum temperature must be at least 10")
+    @Max(value = 50, message = "Minimum temperature cannot exceed 50")
     private double minTemp;
 
-    @Max(50)
+    @Min(value = 10, message = "Maximum temperature must be at least 10")
+    @Max(value = 50, message = "Maximum temperature cannot exceed 50")
     private double maxTemp;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Minimum humidity cannot be below 0")
+    @Max(value = 100, message = "Minimum humidity cannot exceed 100")
     private double minHumidity;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Maximum humidity cannot be below 0")
+    @Max(value = 100, message = "Maximum humidity cannot exceed 100")
     private double maxHumidity;
 
     private boolean active;

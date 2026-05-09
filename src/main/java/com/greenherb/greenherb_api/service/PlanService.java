@@ -19,6 +19,10 @@ public class PlanService {
             throw new RuntimeException("minTemp must be lower than maxTemp");
         }
 
+        if (plan.getMinHumidity() >= plan.getMaxHumidity()) {
+            throw new RuntimeException("minHumidity must be lower than maxHumidity");
+        }
+
         plan.setId(null);
 
         return planRepository.save(plan);
@@ -39,6 +43,10 @@ public class PlanService {
 
         if (updatedPlan.getMinTemp() >= updatedPlan.getMaxTemp()) {
             throw new RuntimeException("minTemp must be lower than maxTemp");
+        }
+
+        if (updatedPlan.getMinHumidity() >= updatedPlan.getMaxHumidity()) {
+            throw new RuntimeException("minHumidity must be lower than maxHumidity");
         }
 
         Plan existingPlan = getPlanById(id);
