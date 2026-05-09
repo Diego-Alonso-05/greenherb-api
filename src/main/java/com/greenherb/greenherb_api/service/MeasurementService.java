@@ -3,8 +3,10 @@ package com.greenherb.greenherb_api.service;
 import com.greenherb.greenherb_api.model.Alert;
 import com.greenherb.greenherb_api.model.AlertStatus;
 import com.greenherb.greenherb_api.model.Measurement;
+import com.greenherb.greenherb_api.model.Plan;
 import com.greenherb.greenherb_api.repository.AlertRepository;
 import com.greenherb.greenherb_api.repository.MeasurementRepository;
+import com.greenherb.greenherb_api.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ public class MeasurementService {
 
     private final MeasurementRepository measurementRepository;
     private final AlertRepository alertRepository;
+    private final PlanRepository planRepository;
 
     public Measurement saveMeasurement(Measurement measurement) {
 
@@ -24,10 +27,27 @@ public class MeasurementService {
         Measurement savedMeasurement =
                 measurementRepository.save(measurement);
 
-        if (measurement.getTemperature() > 30) {
+        Plan activePlan = planRepository.findByActiveTrue()
+                .orElseThrow(() ->
+                        new RuntimeException("No active plan found")
+                );
+
+        boolean highTemperature =
+                measurement.getTemperature() > activePlan.getMaxTemp();
+
+        boolean lowTemperature =
+                measurement.getTemperature() < activePlan.getMinTemp();
+
+        boolean highHumidity =
+                measurement.getHumidity() > activePlan.getMaxHumidity();
+
+        boolean lowHumidity =
+                measurement.getHumidity() < activePlan.getMinHumidity();
+
+        if (highTemperature && lowHumidity) {
 
             Alert alert = Alert.builder()
-                    .message("Temperature too high")
+                    .message("Critical environment conditions detected")
                     .level("CRITICAL")
                     .status(AlertStatus.ACTIVE)
                     .createdAt(LocalDateTime.now())
@@ -36,10 +56,10 @@ public class MeasurementService {
             alertRepository.save(alert);
         }
 
-        if (measurement.getHumidity() > 70) {
+        if (highHumidity || lowTemperature) {
 
             Alert alert = Alert.builder()
-                    .message("Humidity too high")
+                    .message("Warning conditions detected")
                     .level("WARNING")
                     .status(AlertStatus.ACTIVE)
                     .createdAt(LocalDateTime.now())

@@ -21,9 +21,21 @@ public class Plan {
     @NotBlank
     private String type;
 
-    @Min(18)
+    @Min(10)
     private double minTemp;
 
-    @Max(28)
+    @Max(50)
     private double maxTemp;
+
+    @Min(0)
+    @Max(100)
+    private double minHumidity;
+
+    @Min(0)
+    @Max(100)
+    private double maxHumidity;
+
+    private boolean active;
+
+    private boolean automaticIrrigation;
 }

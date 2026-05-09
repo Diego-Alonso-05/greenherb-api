@@ -19,10 +19,43 @@ public class PlanService {
             throw new RuntimeException("minTemp must be lower than maxTemp");
         }
 
+        plan.setId(null);
+
         return planRepository.save(plan);
     }
 
     public List<Plan> getPlans() {
+
         return planRepository.findAll();
+    }
+
+    public Plan getPlanById(Long id) {
+
+        return planRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Plan not found"));
+    }
+
+    public Plan updatePlan(Long id, Plan updatedPlan) {
+
+        if (updatedPlan.getMinTemp() >= updatedPlan.getMaxTemp()) {
+            throw new RuntimeException("minTemp must be lower than maxTemp");
+        }
+
+        Plan existingPlan = getPlanById(id);
+
+        existingPlan.setType(updatedPlan.getType());
+        existingPlan.setMinTemp(updatedPlan.getMinTemp());
+        existingPlan.setMaxTemp(updatedPlan.getMaxTemp());
+        existingPlan.setMinHumidity(updatedPlan.getMinHumidity());
+        existingPlan.setMaxHumidity(updatedPlan.getMaxHumidity());
+        existingPlan.setActive(updatedPlan.isActive());
+        existingPlan.setAutomaticIrrigation(updatedPlan.isAutomaticIrrigation());
+
+        return planRepository.save(existingPlan);
+    }
+
+    public void deletePlan(Long id) {
+
+        planRepository.deleteById(id);
     }
 }
