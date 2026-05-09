@@ -1,13 +1,16 @@
 package com.greenherb.greenherb_api.security;
 
+import com.greenherb.greenherb_api.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class JwtService {
@@ -16,12 +19,18 @@ public class JwtService {
             "mySuperSecretKeyForJwtAuthenticationGreenHerb123456";
 
     private SecretKey getSigningKey() {
+
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Role role) {
+
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put("role", role.name());
 
         return Jwts.builder()
+                .claims(claims)
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(
@@ -31,14 +40,23 @@ public class JwtService {
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    public Claims extractAllClaims(String token) {
 
-        Claims claims = Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
 
-        return claims.getSubject();
+    public String extractUsername(String token) {
+
+        return extractAllClaims(token).getSubject();
+    }
+
+    public String extractRole(String token) {
+
+        return extractAllClaims(token)
+                .get("role", String.class);
     }
 }

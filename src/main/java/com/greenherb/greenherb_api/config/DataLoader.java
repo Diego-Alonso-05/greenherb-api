@@ -18,17 +18,30 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        if (userRepository.findByUsername("admin").isEmpty()) {
+        createUser("admin", "1234", Role.ADMIN);
+
+        createUser("technician", "1234", Role.TECHNICIAN);
+
+        createUser("responsible", "1234", Role.RESPONSIBLE);
+    }
+
+    private void createUser(
+            String username,
+            String password,
+            Role role
+    ) {
+
+        if (userRepository.findByUsername(username).isEmpty()) {
 
             User user = new User();
 
-            user.setUsername("admin");
-            user.setPassword(passwordEncoder.encode("1234"));
-            user.setRole(Role.ADMIN);
+            user.setUsername(username);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setRole(role);
 
             userRepository.save(user);
 
-            System.out.println("Admin user created");
+            System.out.println(username + " created");
         }
     }
 }

@@ -30,6 +30,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(
                                 "/auth/**",
                                 "/swagger-ui/**",
@@ -37,6 +38,19 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
+                        // PLANS
+                        .requestMatchers("/plans/**")
+                        .hasAnyRole("ADMIN", "RESPONSIBLE")
+
+                        // ALERTS
+                        .requestMatchers("/alerts/**")
+                        .hasAnyRole("ADMIN", "RESPONSIBLE")
+
+                        // MEASUREMENTS
+                        .requestMatchers("/measurements/**")
+                        .hasAnyRole("ADMIN", "TECHNICIAN")
+
+                        // RESTO
                         .anyRequest().authenticated()
                 )
 
@@ -50,6 +64,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 }
