@@ -12,7 +12,6 @@ public class AlertService {
 
     private final AlertRepository alertRepository;
 
-    // CREAR ALERTA AUTOMÁTICA
     public Alert createAlert(String message, String level) {
 
         Alert alert = new Alert();
@@ -25,7 +24,6 @@ public class AlertService {
         return alertRepository.save(alert);
     }
 
-    // RESOLVER ALERTA
     public Alert resolveAlert(Long id) {
 
         Alert alert = alertRepository.findById(id)
@@ -36,7 +34,6 @@ public class AlertService {
         return alertRepository.save(alert);
     }
 
-    // IGNORAR ALERTA
     public Alert ignoreAlert(Long id, String justification) {
 
         if (justification == null || justification.isBlank()) {

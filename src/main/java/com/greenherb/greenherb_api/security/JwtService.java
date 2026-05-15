@@ -16,7 +16,7 @@ import java.util.Map;
 public class JwtService {
 
     private static final String SECRET_KEY =
-            "mySuperSecretKeyForJwtAuthenticationGreenHerb123456";
+            "GreenHerbSecureJwtKey";
 
     private SecretKey getSigningKey() {
 
